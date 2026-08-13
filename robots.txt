@@ -1,0 +1,6 @@
+# https://filipinacabincrew.com/
+User-agent: *
+Allow: /
+Disallow: /tools/
+
+Sitemap: https://filipinacabincrew.com/sitemap.xml

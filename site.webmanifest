@@ -1,0 +1,14 @@
+{
+  "name": "Filipina Cabin Crew",
+  "short_name": "FCC",
+  "description": "Where Aviation Connects Us — hiring updates, career guides, mentorship and community for cabin crew worldwide.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#1B2A6B",
+  "icons": [
+    { "src": "/images/fcc-logo-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/images/fcc-logo.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }
+  ]
+}
