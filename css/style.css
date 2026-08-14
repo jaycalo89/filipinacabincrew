@@ -652,7 +652,25 @@ body.nav-open{overflow:hidden;}
   width:7px;height:7px;border-radius:50%;
   background:var(--blue-300);
 }
-.hiring-card .btn{margin-top:auto;}
+.hiring-card .btn-block{margin-top:auto;}
+
+/* Two-up action row at the foot of a hiring card: apply on the airline's own
+   site, or read the preparation guide first. The pair sits side by side while
+   there is room for both and stacks once the card narrows. */
+.card-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:auto;}
+.card-actions .btn{
+  flex:1 1 148px;
+  padding:14px 16px;
+  font-size:.78rem;letter-spacing:.11em;
+}
+.btn-ext{width:13px;height:13px;flex-shrink:0;opacity:.72;}
+
+/* Per-card independence note. Deliberately quiet, but always present. */
+.card-note{
+  margin:16px 0 0;padding-top:14px;
+  border-top:1px solid var(--border);
+  font-size:.74rem;line-height:1.55;color:var(--ink-muted);
+}
 
 /* --- Article card --------------------------------------------------------- */
 .article-card{background:#fff;}
