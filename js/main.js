@@ -19,11 +19,16 @@
      to CONTACT_EMAIL in the visitor's own mail client. That genuinely reaches
      the inbox on a static host with no backend, but it needs the visitor to
      press send, so it is a stopgap rather than the finished article.
+
+     All three currently post to the same Formspree form, so newsletter
+     signups, mentorship applications and contact messages land in one inbox.
+     The `subject` field posted alongside them (see SUBJECTS) is what tells
+     them apart.
      ---------------------------------------------------------------------- */
   var ENDPOINTS = {
-    newsletter: '',
-    mentorship: '',
-    contact: ''
+    newsletter: 'https://formspree.io/f/mzepvoev',
+    mentorship: 'https://formspree.io/f/mzepvoev',
+    contact: 'https://formspree.io/f/mzepvoev'
   };
 
   var CONTACT_EMAIL = 'filipinacabincrew@outlook.com';
@@ -32,6 +37,14 @@
     newsletter: 'Newsletter signup',
     mentorship: 'Mentorship application',
     contact: 'Website enquiry'
+  };
+
+  /* What the visitor is told on success. A contact message is not an
+     application and should not be confirmed as one. */
+  var MESSAGES = {
+    newsletter: 'You are on the list — welcome aboard.',
+    mentorship: 'Thank you — your application has been sent. We will be in touch by email.',
+    contact: 'Thank you — your message has been sent. We will reply by email.'
   };
 
   var reduceMotion = window.matchMedia &&
@@ -374,16 +387,21 @@
         if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
         say(status, '', 'Sending…');
 
+        // All three form types post to the same Formspree form, and a
+        // newsletter signup carries nothing but an address — so without this
+        // the inbox cannot tell a signup from an application. _subject is
+        // Formspree's reserved field for the notification subject line.
+        var payload = new FormData(form);
+        payload.append('_subject', SUBJECTS[key] || 'Website enquiry');
+
         fetch(endpoint, {
           method: 'POST',
           headers: { 'Accept': 'application/json' },
-          body: new FormData(form)
+          body: payload
         }).then(function (res) {
           if (!res.ok) throw new Error('HTTP ' + res.status);
           form.reset();
-          say(status, 'ok', key === 'newsletter'
-            ? 'You are on the list — welcome aboard.'
-            : 'Thank you — your application has been sent. We will be in touch by email.');
+          say(status, 'ok', MESSAGES[key] || MESSAGES.contact);
         }).catch(function () {
           say(status, 'err', 'Something went wrong. Please try again in a moment.');
         }).then(function () {
