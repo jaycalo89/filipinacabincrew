@@ -70,7 +70,8 @@
   --gutter:20px;
 
   --ease:cubic-bezier(0.22,0.61,0.36,1);
-  --header-h:72px;
+  /* Tall enough to clear the 55px brand mark with even air above and below. */
+  --header-h:79px;
 }
 
 /* ==========================================================================
@@ -322,9 +323,15 @@ button{font-family:inherit;}
   height:var(--header-h);
 }
 
-.brand{display:flex;align-items:center;gap:11px;flex-shrink:0;color:inherit;}
+.brand{display:flex;align-items:center;gap:12px;flex-shrink:0;color:inherit;}
 .brand:hover{color:inherit;}
-.brand img{width:42px;height:42px;flex-shrink:0;}
+/* Sized by height with an automatic width, so the mark renders correctly
+   whatever its aspect ratio — a square crest and a wide wordmark both sit on
+   the same baseline. object-fit:contain stops a non-square file being
+   stretched if width/height attributes on the tag disagree with the file. */
+.brand img{height:44px;width:auto;max-width:210px;object-fit:contain;flex-shrink:0;}
+.site-header .brand img{height:55px;}
+.footer-brand .brand img{height:48px;}
 .brand-text{display:flex;flex-direction:column;line-height:1;}
 .brand-name{
   font-family:'Oswald',sans-serif;font-weight:600;
@@ -1229,7 +1236,7 @@ body.nav-open{overflow:hidden;}
 }
 
 @media (min-width:768px){
-  :root{--gutter:32px;--header-h:82px;}
+  :root{--gutter:32px;--header-h:88px;}
   body{font-size:17px;}
   .section{padding:88px 0;}
   .section-lg{padding:110px 0;}
@@ -1295,7 +1302,6 @@ body.nav-open{overflow:hidden;}
   .nav-links a:hover::after,.nav-links a.active::after{transform:scaleX(1);}
   .nav-links a.active{color:var(--navy-800);}
   .nav-join{display:inline-flex;white-space:nowrap;padding:11px 16px;}
-  .brand img{width:46px;height:46px;}
   .brand-name{font-size:1.06rem;}
   /* The strapline under the wordmark is the first thing to go when the row
      gets tight — it repeats in the hero and the footer anyway. */
