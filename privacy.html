@@ -20,7 +20,7 @@
 
 <link rel="preload" as="font" type="font/woff2" href="fonts/oswald-latin.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="fonts/inter-latin.woff2" crossorigin>
-<link rel="stylesheet" href="css/style.min.css?v=20260815">
+<link rel="stylesheet" href="css/style.min.css?v=20260815b">
 
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -28,14 +28,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
 
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-GYLEWQT3B9"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-GYLEWQT3B9');
-</script>
+<script src="js/cookie-consent.min.js?v=20260815b" defer></script>
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
@@ -144,7 +137,8 @@
         <h2>Cookies and analytics</h2>
         <p>Fonts, images, styles and scripts are served from our own domain rather than from third-party networks, so the page itself loads without calling out to anyone else.</p>
         <p>We do use <strong>Google Analytics 4</strong> to understand how the site is used — which pages are read, roughly where visitors come from, and whether people find what they came for. To do this, Google sets cookies in your browser and processes information including your IP address, device and browser type, and the pages you view. We use this only in aggregate; we do not use it to identify individuals, and we do not run advertising or remarketing on this site.</p>
-        <p>You can prevent this at any time by blocking or clearing cookies in your browser settings, by using your browser's "do not track" or tracking-protection features, or by installing Google's <a href="https://tools.google.com/dlpage/gaoptout" rel="noopener nofollow">Analytics opt-out add-on</a>. Google's own handling of this data is covered by the <a href="https://policies.google.com/privacy" rel="noopener nofollow">Google Privacy Policy</a>. Nothing on this site stops working if you block analytics.</p>
+        <p><strong>Analytics only runs if you accept it.</strong> On your first visit a notice appears at the foot of the page asking whether you agree to cookies. Until you choose, no analytics is loaded and no analytics cookies are set. If you decline, none are set at all — the analytics script is never requested. Your choice is remembered in your browser's local storage under <code>fcc-cookie-consent</code>, so you are not asked again.</p>
+        <p>You can change your mind at any time using the <a href="#" data-cookie-settings>Cookie Settings</a> link in the footer of every page. You can also block or clear cookies in your browser settings, use your browser's tracking-protection features, or install Google's <a href="https://tools.google.com/dlpage/gaoptout" rel="noopener nofollow">Analytics opt-out add-on</a>. Google's own handling of this data is covered by the <a href="https://policies.google.com/privacy" rel="noopener nofollow">Google Privacy Policy</a>. Nothing on this site stops working if you decline or block analytics.</p>
         <p>Search from the site header is submitted to an external search engine, which handles that query under its own privacy policy.</p>
 
         <h2>Service providers</h2>
@@ -251,6 +245,8 @@
         <a href="privacy.html">Privacy Policy</a>
         <span class="sep">|</span>
         <a href="terms.html">Terms of Use</a>
+        <span class="sep">|</span>
+        <a href="#" data-cookie-settings>Cookie Settings</a>
       </nav>
     </div>
   </div>
@@ -260,6 +256,6 @@
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
 </button>
 
-<script src="js/main.min.js?v=20260815" defer></script>
+<script src="js/main.min.js?v=20260815b" defer></script>
 </body>
 </html>

@@ -1361,6 +1361,67 @@ body.nav-open{overflow:hidden;}
 .to-top:hover{background:var(--gold-500);color:var(--navy-900);}
 .to-top svg{width:18px;height:18px;}
 
+/* --- Cookie consent ------------------------------------------------------- */
+/* Sits above the back-to-top button (z-90) and below the mobile nav panel
+   (z-120), so opening the menu covers the notice rather than fighting it.
+   The gold hairline on top is the same device the footer uses, so the strip
+   reads as the bottom edge of the site rather than a floating overlay. */
+.cookie-banner{
+  position:fixed;left:0;right:0;bottom:0;z-index:100;
+  background:var(--navy-800);
+  color:var(--on-navy);
+  border-top:2px solid var(--gold-500);
+  box-shadow:0 -12px 40px -18px rgba(17,28,76,0.55);
+  transform:translateY(100%);
+  transition:transform .38s var(--ease);
+}
+.cookie-banner.is-in{transform:none;}
+
+.cookie-banner-inner{
+  width:100%;max-width:var(--maxw);margin:0 auto;
+  padding:16px var(--gutter);
+  display:flex;flex-direction:column;gap:13px;
+}
+/* Kept deliberately compact on a phone: with the buttons stacked this strip
+   is already the tallest fixed element on the page, and it sits over content
+   the visitor is trying to read. */
+.cookie-banner-copy{
+  margin:0;
+  font-size:.83rem;line-height:1.55;
+  color:var(--on-navy-soft);
+  max-width:78ch;
+}
+@media (min-width:900px){
+  .cookie-banner-copy{font-size:.88rem;line-height:1.65;}
+}
+.cookie-banner-copy a{
+  color:var(--gold-400);
+  text-decoration:underline;
+  text-underline-offset:2px;
+}
+.cookie-banner-copy a:hover{color:#fff;}
+
+/* Buttons stack full width on a phone and sit side by side from 560px. */
+.cookie-actions{display:flex;flex-direction:column;gap:8px;}
+.cookie-actions .btn{width:100%;justify-content:center;padding-top:12px;padding-bottom:12px;}
+
+@media (min-width:560px){
+  .cookie-actions{flex-direction:row;flex-shrink:0;}
+  .cookie-actions .btn{width:auto;}
+}
+@media (min-width:900px){
+  .cookie-banner-inner{
+    flex-direction:row;align-items:center;justify-content:space-between;gap:32px;
+    padding:18px var(--gutter);
+  }
+}
+@media (prefers-reduced-motion:reduce){
+  .cookie-banner{transition:none;}
+}
+@media print{
+  .cookie-banner{display:none !important;}
+}
+
 .error-page{
   min-height:70vh;display:flex;align-items:center;text-align:center;
   padding:80px 0;

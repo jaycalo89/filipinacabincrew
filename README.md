@@ -29,7 +29,9 @@ css/style.css           Source stylesheet (edit this one)
 css/style.min.css       Minified build output — referenced by every page
 js/main.js              Source script (edit this one)
 js/main.min.js          Minified build output — referenced by every page
-tools/build.py          Regenerates both .min files
+js/cookie-consent.js    Consent banner; injects GA4 only after the visitor accepts
+js/cookie-consent.min.js Minified build output — referenced by every page
+tools/build.py          Regenerates all three .min files
 tools/make-icons.py     Regenerates favicons + og-image.jpg from images/fcc-logo.png
 package.json            Pins the JS minifier (terser) used by tools/build.py
 
@@ -42,7 +44,8 @@ site.webmanifest, robots.txt, sitemap.xml
 
 ## Editing
 
-After changing `css/style.css` or `js/main.js`, rebuild the minified files:
+After changing `css/style.css`, `js/main.js` or `js/cookie-consent.js`, rebuild the
+minified files:
 
 ```bash
 python tools/build.py
@@ -56,13 +59,14 @@ step as long as `node` and `npx` are present. If none of those work the build
 stops with an error rather than quietly substituting a different minifier.
 
 **Then bump the cache-busting version.** Every page references the built files
-as `style.min.css?v=YYYYMMDD` and `main.min.js?v=YYYYMMDD`. If the contents
+as `style.min.css?v=YYYYMMDD`, `main.min.js?v=YYYYMMDD` and
+`cookie-consent.min.js?v=YYYYMMDD`. If the contents
 change but the `?v=` value does not, anyone who has already visited keeps the
 old file from their browser cache and never sees the change:
 
 ```bash
 # from the repo root, replacing the old value with a new one
-sed -i 's/?v=20260814c"/?v=20260815"/g' *.html career-tips/*.html
+sed -i 's/?v=20260815b"/?v=20260816"/g' *.html career-tips/*.html
 ```
 
 If you replace `images/fcc-logo.png`, regenerate everything derived from it:
@@ -92,11 +96,14 @@ layout shift.
    `community.html` on every page, all opening in a new tab. They are also declared in
    the `sameAs` block of the Organization schema on `index.html`. If a handle changes,
    update it in all three places plus that schema.
-3. **Analytics — live.** Google Analytics 4 (`G-GYLEWQT3B9`) is installed and firing on
-   all twelve pages. Note that it sets cookies on arrival, before the visitor has agreed
-   to anything: for EU/UK visitors that needs a consent banner gating the gtag snippet,
-   which this site does not yet have. The cookies section of `privacy.html` names Google
-   and links their opt-out.
+3. **Analytics — live, behind consent.** Google Analytics 4 (`G-GYLEWQT3B9`) runs on all
+   twelve pages, but the tag is *not* in the markup. `js/cookie-consent.js` injects it,
+   and only after the visitor accepts the notice at the foot of the page. Decline and the
+   script is never requested, so no analytics cookies are set at all. The choice is stored
+   in `localStorage` under `fcc-cookie-consent` and can be revisited from the Cookie
+   Settings link in every footer. If you ever add another third-party tag, load it from
+   the same place rather than pasting it into the head — otherwise it will fire before
+   consent and undo this.
 4. **Hiring listings.** The eight listings on `hiring-updates.html` and the three on the
    homepage are examples of the format, written from publicly known requirements. Replace
    them with your own verified updates before launch — and keep the note that the site is
@@ -124,7 +131,9 @@ never reflows.
 
 ## Performance notes
 
-- Fonts and all assets are same-origin; the pages make no third-party requests.
+- Fonts and all assets are same-origin. The only third-party request the site can make
+  is Google Analytics, and it is not issued unless the visitor accepts the cookie
+  notice; decline and the page stays entirely same-origin.
 - The homepage hero is preloaded in the head as WebP with a JPEG fallback; every other
   image is `loading="lazy"` with explicit `width`/`height` to keep layout shift at zero.
 - Photography is served as WebP with JPEG fallbacks at two or three widths via

@@ -137,10 +137,13 @@ def report(src_path: str, dst_path: str) -> None:
     print(f"  {os.path.relpath(dst_path, ROOT):24s} {src_len:>7,} -> {dst_len:>7,} bytes  (-{saved}%)")
 
 
+JS_SOURCES = ("js/main.js", "js/cookie-consent.js")
+
+
 def main() -> int:
     print("Building Filipina Cabin Crew assets…")
 
-    for src_rel in ("css/style.css", "js/main.js"):
+    for src_rel in ("css/style.css",) + JS_SOURCES:
         if not os.path.exists(os.path.join(ROOT, src_rel)):
             print(f"  missing source: {src_rel}", file=sys.stderr)
             return 1
@@ -150,10 +153,11 @@ def main() -> int:
     write(css_dst, minify_css(open(css_src, encoding="utf-8").read()))
     report(css_src, css_dst)
 
-    js_src = os.path.join(ROOT, "js/main.js")
-    js_dst = os.path.join(ROOT, "js/main.min.js")
-    minify_js(js_src, js_dst)                # terser writes the file itself
-    report(js_src, js_dst)
+    for src_rel in JS_SOURCES:
+        js_src = os.path.join(ROOT, src_rel)
+        js_dst = os.path.join(ROOT, src_rel[:-3] + ".min.js")
+        minify_js(js_src, js_dst)            # terser writes the file itself
+        report(js_src, js_dst)
 
     print("Done.")
     return 0
