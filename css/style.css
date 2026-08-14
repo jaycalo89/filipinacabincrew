@@ -884,6 +884,20 @@ body.nav-open{overflow:hidden;}
 .page-hero-light{background:var(--white);color:var(--ink-soft);}
 .page-hero-light h1{color:var(--navy-800);}
 
+/* Category / read-time row under an article headline, sitting on the navy
+   page hero — the default muted greys would disappear against it. */
+.article-meta-bar{
+  display:flex;flex-wrap:wrap;align-items:center;gap:12px 18px;
+  margin:24px 0 0;
+}
+.page-hero .article-meta-bar .read-time{color:rgba(255,255,255,0.74);}
+.page-hero .article-meta-bar .read-time svg{color:var(--gold-500);}
+.page-hero .article-meta-bar .badge-cat{
+  background:rgba(255,255,255,0.12);
+  border-color:rgba(255,255,255,0.26);
+  color:#fff;
+}
+
 .breadcrumb{
   display:flex;flex-wrap:wrap;align-items:center;gap:8px;
   font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;
@@ -1102,6 +1116,9 @@ body.nav-open{overflow:hidden;}
   color:var(--gold-500);margin:0 0 14px;
 }
 .statement p{color:var(--on-navy-soft);margin:0;font-size:.98rem;line-height:1.8;}
+.statement ul{color:var(--on-navy-soft);font-size:.96rem;line-height:1.7;}
+.statement li{margin-bottom:.55em;}
+.statement li::marker{color:var(--gold-500);}
 
 /* Quiet legal note — small, italic, muted, inside a light bordered box.
    Sits under a call to action without competing with it. */

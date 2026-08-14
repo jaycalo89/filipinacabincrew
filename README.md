@@ -13,7 +13,11 @@ site, no third-party requests at runtime.
 ```
 index.html              Homepage — hero, stats, hiring, guides, mentorship, community
 hiring-updates.html     Filterable, paginated listings with an alerts sidebar
-career-tips.html        Featured guide, filterable guide grid, seven full guides in page
+career-tips.html        Featured guide, filterable guide grid, five guides inline
+career-tips/            Standalone long-form guides (one page each)
+  open-day-guide.html     How To Ace A Cabin Crew Open Day
+  grooming-standards.html Cabin Crew Grooming and Presentation Standards
+  after-interview.html    What Happens After Your Cabin Crew Interview
 mentorship.html         How it works, benefits, application form, FAQ
 about.html              Story, mission, independence statement, photography credits
 community.html          Newsletter, social channels, house rules, contact form
