@@ -937,6 +937,89 @@ body.nav-open{overflow:hidden;}
 /* ==========================================================================
    14. Filters, pagination, layout with sidebar
    ========================================================================== */
+/* --- Listing controls: search, region, sort ------------------------------- */
+/* Search takes the whole row on a phone and shares it with the two selects
+   from 620px up, where there is room for all three side by side. */
+.listing-controls{
+  display:flex;flex-wrap:wrap;gap:14px;
+  margin-bottom:20px;
+}
+.listing-search{
+  position:relative;flex:1 1 100%;min-width:0;
+}
+.listing-search svg{
+  position:absolute;left:16px;top:50%;transform:translateY(-50%);
+  width:17px;height:17px;color:var(--ink-muted);pointer-events:none;
+}
+.listing-search input{
+  width:100%;
+  padding:14px 16px 14px 44px;
+  font-family:inherit;font-size:.95rem;color:var(--ink);
+  background:#fff;
+  border:1px solid var(--border-strong);border-radius:var(--radius-sm);
+  transition:border-color .2s var(--ease),box-shadow .2s var(--ease);
+}
+.listing-search input::placeholder{color:var(--ink-muted);}
+.listing-search input:focus{
+  outline:none;
+  border-color:var(--navy-700);
+  box-shadow:0 0 0 3px var(--gold-tint);
+}
+/* The native clear affordance sits too close to the edge on WebKit. */
+.listing-search input::-webkit-search-cancel-button{margin-right:2px;}
+
+.listing-selects{display:flex;flex-wrap:wrap;gap:14px;flex:1 1 100%;}
+.listing-select{display:flex;align-items:center;gap:9px;flex:1 1 190px;min-width:0;}
+.listing-select label{
+  font-family:'Oswald',sans-serif;font-weight:500;
+  font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ink-muted);white-space:nowrap;
+}
+.listing-select select{
+  flex:1 1 auto;min-width:0;
+  padding:11px 34px 11px 14px;
+  font-family:inherit;font-size:.86rem;color:var(--ink);
+  background:#fff;
+  border:1px solid var(--border-strong);border-radius:var(--radius-sm);
+  cursor:pointer;
+  /* Inline chevron so the control looks the same across browsers without a
+     second element or a webfont icon. */
+  appearance:none;-webkit-appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236B7590' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 11px center;background-size:15px;
+}
+.listing-select select:focus{
+  outline:none;border-color:var(--navy-700);
+  box-shadow:0 0 0 3px var(--gold-tint);
+}
+
+/* Headline count above the finer-grained "showing x of y" line. */
+.listing-total{
+  font-family:'Oswald',sans-serif;font-weight:600;
+  font-size:1.02rem;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--navy-800);
+  margin:0 0 6px;
+}
+
+/* --- Empty state ---------------------------------------------------------- */
+.listing-empty{
+  text-align:center;
+  padding:52px 26px;
+  border:1px solid var(--border-strong);border-radius:var(--radius-md);
+  background:var(--grey-50);
+}
+.listing-empty[hidden]{display:none;}
+.listing-empty svg{width:34px;height:34px;color:var(--blue-400);margin-bottom:14px;}
+.listing-empty h3{
+  font-family:'Oswald',sans-serif;font-weight:600;
+  font-size:1.2rem;text-transform:uppercase;letter-spacing:.04em;
+  color:var(--ink);margin:0 0 10px;
+}
+.listing-empty p{color:var(--ink-soft);margin:0 auto 22px;max-width:46ch;}
+.listing-empty .newsletter-form{max-width:430px;margin:0 auto;}
+.listing-empty .form-status:empty{margin:0;}
+.listing-empty-reset{margin-top:18px;}
+
 .filter-bar{
   display:flex;flex-wrap:wrap;gap:10px;
   padding-bottom:6px;
@@ -956,6 +1039,11 @@ body.nav-open{overflow:hidden;}
 .filter-count{
   font-size:.82rem;color:var(--ink-muted);
   margin:0 0 26px;letter-spacing:.04em;
+}
+/* The ellipsis between windowed page numbers is a label, not a target. */
+.pagination .is-gap{
+  border:0;background:none;color:var(--ink-muted);
+  min-width:auto;padding:0 2px;cursor:default;
 }
 .is-hidden{display:none !important;}
 
@@ -1298,6 +1386,12 @@ body.nav-open{overflow:hidden;}
 /* ==========================================================================
    18. Responsive — the layout widens from here up
    ========================================================================== */
+@media (min-width:620px){
+  /* Enough width for the search box and the two selects to share one row. */
+  .listing-search{flex:2 1 260px;}
+  .listing-selects{flex:3 1 320px;flex-wrap:nowrap;}
+}
+
 @media (min-width:600px){
   /* Past the phone the row has room again, so the mark and wordmark go back to
      full size and the strapline reappears. */

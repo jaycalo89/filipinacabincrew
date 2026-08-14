@@ -261,19 +261,152 @@
       var counter = document.querySelector('[data-filter-count="' + name + '"]');
       var pager = document.querySelector('[data-pagination="' + name + '"]');
 
+      // Optional controls. A collection that has none of these behaves exactly
+      // as it did before — the guide grid on career-tips.html relies on that.
+      var searchInput = document.querySelector('[data-collection-search="' + name + '"]');
+      var regionSelect = document.querySelector('[data-collection-region="' + name + '"]');
+      var sortSelect = document.querySelector('[data-collection-sort="' + name + '"]');
+      var totalEl = document.querySelector('[data-collection-total="' + name + '"]');
+      var emptyEl = document.querySelector('[data-collection-empty="' + name + '"]');
+      var resetEls = document.querySelectorAll('[data-collection-reset="' + name + '"]');
+
       var filter = 'all';
+      var region = 'all';
+      var query = '';
+      var sort = sortSelect ? sortSelect.value : '';
       var page = 1;
 
-      function matches(card) {
+      // Document order is the baseline, and the tiebreaker for every sort, so
+      // that equal keys never shuffle between renders.
+      cards.forEach(function (card, i) { card._order = i; });
+
+      var RECENT_DAYS = 30;
+      var STATUS_RANK = { 'hiring-now': 0, 'closing-soon': 1, 'opening-soon': 2 };
+
+      function postedTime(card) {
+        var raw = card.getAttribute('data-posted');
+        if (!raw) return NaN;
+        var t = Date.parse(raw);
+        return isNaN(t) ? NaN : t;
+      }
+
+      function isRecent(card) {
+        var t = postedTime(card);
+        if (isNaN(t)) return false;
+        return (Date.now() - t) <= RECENT_DAYS * 24 * 60 * 60 * 1000;
+      }
+
+      function inRegion(card) {
+        if (region === 'all') return true;
+        var cats = (card.getAttribute('data-category') || '').split(/\s+/);
+        return cats.indexOf(region) !== -1;
+      }
+
+      /* One filter value covers three cases so the same bar can drive both
+         collections: "recent" is computed, otherwise the value is matched
+         against the card's status (hiring listings) or its category (guides). */
+      function inFilter(card) {
         if (filter === 'all') return true;
+        if (filter === 'recent') return isRecent(card);
+        if ((card.getAttribute('data-status') || '') === filter) return true;
         var cats = (card.getAttribute('data-category') || '').split(/\s+/);
         return cats.indexOf(filter) !== -1;
       }
 
+      function inQuery(card) {
+        if (!query) return true;
+        var hay = (card.getAttribute('data-search') || '').toLowerCase();
+        // Every word must appear, so "korean seoul" narrows rather than widens.
+        var words = query.split(/\s+/);
+        for (var i = 0; i < words.length; i++) {
+          if (words[i] && hay.indexOf(words[i]) === -1) return false;
+        }
+        return true;
+      }
+
+      function matches(card) {
+        return inRegion(card) && inFilter(card) && inQuery(card);
+      }
+
+      function text(card, attr) {
+        return (card.getAttribute(attr) || '').toLowerCase();
+      }
+
+      function comparator() {
+        if (sort === 'airline') {
+          return function (a, b) {
+            return text(a, 'data-airline').localeCompare(text(b, 'data-airline')) ||
+                   a._order - b._order;
+          };
+        }
+        if (sort === 'region') {
+          return function (a, b) {
+            return text(a, 'data-region').localeCompare(text(b, 'data-region')) ||
+                   text(a, 'data-airline').localeCompare(text(b, 'data-airline')) ||
+                   a._order - b._order;
+          };
+        }
+        if (sort === 'status') {
+          return function (a, b) {
+            var ra = STATUS_RANK[a.getAttribute('data-status')];
+            var rb = STATUS_RANK[b.getAttribute('data-status')];
+            if (ra === undefined) ra = 99;
+            if (rb === undefined) rb = 99;
+            return ra - rb ||
+                   text(a, 'data-airline').localeCompare(text(b, 'data-airline')) ||
+                   a._order - b._order;
+          };
+        }
+        if (sort === 'newest') {
+          return function (a, b) {
+            var ta = postedTime(a), tb = postedTime(b);
+            if (isNaN(ta)) ta = -Infinity;
+            if (isNaN(tb)) tb = -Infinity;
+            return (tb - ta) || a._order - b._order;
+          };
+        }
+        return null;   // no sort control: leave the authored order alone
+      }
+
+      /* Sorting moves the real nodes rather than re-rendering them, so the
+         cards keep their event listeners and the DOM stays the source of
+         truth for pagination. */
+      function applySort() {
+        var cmp = comparator();
+        if (!cmp) return cards;
+        var ordered = cards.slice().sort(cmp);
+        var changed = ordered.some(function (card, i) { return container.children[i] !== card; });
+        if (changed) {
+          var frag = document.createDocumentFragment();
+          ordered.forEach(function (card) { frag.appendChild(card); });
+          container.appendChild(frag);
+        }
+        return ordered;
+      }
+
+      function regionLabel() {
+        if (!regionSelect) return '';
+        var opt = regionSelect.options[regionSelect.selectedIndex];
+        return opt ? opt.textContent : '';
+      }
+
+      function describeTotal(n) {
+        var isFiltered = filter !== 'all' || !!query;
+        if (region !== 'all') {
+          return n + (n === 1 ? ' position in ' : ' positions in ') + regionLabel();
+        }
+        if (isFiltered) {
+          return n === 1 ? '1 position matches' : n + ' positions match';
+        }
+        return n === 1 ? '1 open position worldwide' : n + ' open positions worldwide';
+      }
+
       function render() {
-        var visible = cards.filter(matches);
+        var ordered = applySort();
+        var visible = ordered.filter(matches);
         var pages = pageSize ? Math.max(1, Math.ceil(visible.length / pageSize)) : 1;
         if (page > pages) page = pages;
+        if (page < 1) page = 1;
         var start = pageSize ? (page - 1) * pageSize : 0;
         var end = pageSize ? start + pageSize : visible.length;
 
@@ -284,10 +417,21 @@
 
         if (counter) {
           var plural = visible.length === 1 ? noun : noun + 's';
-          counter.textContent = pages > 1
-            ? 'Showing ' + (start + 1) + '–' + Math.min(end, visible.length) +
-              ' of ' + visible.length + ' ' + plural
-            : 'Showing all ' + visible.length + ' ' + plural;
+          if (!visible.length) {
+            counter.textContent = 'No ' + noun + 's to show';
+          } else if (pages > 1) {
+            counter.textContent = 'Showing ' + (start + 1) + '–' + Math.min(end, visible.length) +
+              ' of ' + visible.length + ' ' + plural;
+          } else {
+            counter.textContent = 'Showing all ' + visible.length + ' ' + plural;
+          }
+        }
+
+        if (totalEl) totalEl.textContent = describeTotal(visible.length);
+
+        if (emptyEl) {
+          if (visible.length) emptyEl.setAttribute('hidden', '');
+          else emptyEl.removeAttribute('hidden');
         }
 
         if (bar) {
@@ -298,15 +442,50 @@
           });
         }
 
-        if (pager) drawPager(pages);
+        if (pager) drawPager(pages, visible.length);
       }
 
-      function drawPager(pages) {
+      /* Page numbers are windowed: first, last, and the pages either side of
+         the current one, with gaps elided. At six per listing page a hundred
+         listings would otherwise print seventeen numbered links. */
+      function pageWindow(pages) {
+        var span = 1;
+        var wanted = {};
+        wanted[1] = true;
+        wanted[pages] = true;
+        for (var p = page - span; p <= page + span; p++) {
+          if (p >= 1 && p <= pages) wanted[p] = true;
+        }
+        var list = Object.keys(wanted).map(Number).sort(function (a, b) { return a - b; });
+
+        var out = [];
+        var prev = 0;
+        list.forEach(function (p) {
+          if (prev && p - prev > 1) out.push(null);   // null renders as an ellipsis
+          out.push(p);
+          prev = p;
+        });
+        return out;
+      }
+
+      function drawPager(pages, visibleCount) {
         pager.innerHTML = '';
-        if (pages < 2) return;
+        if (!visibleCount || pages < 2) return;
 
         pager.appendChild(step('Prev', page - 1, page === 1));
-        for (var p = 1; p <= pages; p++) pager.appendChild(step(String(p), p, false, p === page));
+        pageWindow(pages).forEach(function (p) {
+          if (p === null) {
+            var li = document.createElement('li');
+            var gap = document.createElement('span');
+            gap.className = 'is-gap';
+            gap.textContent = '…';
+            gap.setAttribute('aria-hidden', 'true');
+            li.appendChild(gap);
+            pager.appendChild(li);
+            return;
+          }
+          pager.appendChild(step(String(p), p, false, p === page));
+        });
         pager.appendChild(step('Next', page + 1, page === pages));
       }
 
@@ -347,6 +526,61 @@
           render();
         });
       }
+
+      if (regionSelect) {
+        regionSelect.addEventListener('change', function () {
+          region = regionSelect.value;
+          page = 1;
+          render();
+        });
+      }
+
+      if (sortSelect) {
+        sortSelect.addEventListener('change', function () {
+          sort = sortSelect.value;
+          page = 1;
+          render();
+        });
+      }
+
+      if (searchInput) {
+        // Typing filters as you go. The work is a substring test per card, so
+        // it stays cheap well past the hundred-listing mark; the small debounce
+        // is there to keep the aria-live count from being read out per letter.
+        var typingTimer = null;
+        var onType = function () {
+          var next = searchInput.value.trim().toLowerCase();
+          if (next === query) return;
+          query = next;
+          page = 1;
+          render();
+        };
+        searchInput.addEventListener('input', function () {
+          if (typingTimer) clearTimeout(typingTimer);
+          typingTimer = setTimeout(onType, 120);
+        });
+        // A search input's clear button fires "search", not "input", in Safari.
+        searchInput.addEventListener('search', onType);
+        searchInput.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape' && searchInput.value) {
+            searchInput.value = '';
+            onType();
+          }
+        });
+      }
+
+      Array.prototype.forEach.call(resetEls, function (el) {
+        el.addEventListener('click', function () {
+          filter = 'all';
+          region = 'all';
+          query = '';
+          if (searchInput) searchInput.value = '';
+          if (regionSelect) regionSelect.value = 'all';
+          page = 1;
+          render();
+          if (searchInput) searchInput.focus();
+        });
+      });
 
       render();
     });

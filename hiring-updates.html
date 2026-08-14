@@ -25,7 +25,7 @@
 
 <link rel="preload" as="font" type="font/woff2" href="fonts/oswald-latin.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="fonts/inter-latin.woff2" crossorigin>
-<link rel="stylesheet" href="css/style.min.css?v=20260814c">
+<link rel="stylesheet" href="css/style.min.css?v=20260815">
 
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -149,19 +149,55 @@
             <p class="section-sub">Listings are grouped by region. Requirements vary between airlines and change often — always confirm the current criteria on the airline's official careers page before applying.</p>
           </div>
 
-          <div class="filter-bar" data-filter-group="jobs" role="group" aria-label="Filter listings by region">
-            <button class="filter-btn is-active" type="button" data-filter="all" aria-pressed="true">All</button>
-            <button class="filter-btn" type="button" data-filter="asia-pacific" aria-pressed="false">Asia Pacific</button>
-            <button class="filter-btn" type="button" data-filter="europe" aria-pressed="false">Europe</button>
-            <button class="filter-btn" type="button" data-filter="americas" aria-pressed="false">Americas</button>
-            <button class="filter-btn" type="button" data-filter="africa" aria-pressed="false">Africa</button>
+          <!-- Search, region and sort. Region is a select rather than a row of
+               buttons so the control stays the same size as more regions are
+               added; the buttons are kept for the status filters, which are a
+               fixed, short set. Everything here is progressive: with JavaScript
+               off the controls simply do nothing and all listings stay visible. -->
+          <div class="listing-controls">
+            <div class="listing-search">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+              <label class="visually-hidden" for="jobs-search">Search listings</label>
+              <input type="search" id="jobs-search" data-collection-search="jobs"
+                     placeholder="Search airline, location or position…" autocomplete="off">
+            </div>
+
+            <div class="listing-selects">
+              <div class="listing-select">
+                <label for="jobs-region">Region</label>
+                <select id="jobs-region" data-collection-region="jobs">
+                  <option value="all">All Regions</option>
+                  <option value="asia-pacific">Asia Pacific</option>
+                  <option value="europe">Europe</option>
+                  <option value="americas">Americas</option>
+                  <option value="africa">Africa</option>
+                </select>
+              </div>
+              <div class="listing-select">
+                <label for="jobs-sort">Sort</label>
+                <select id="jobs-sort" data-collection-sort="jobs">
+                  <option value="newest">Newest First</option>
+                  <option value="airline">Airline A–Z</option>
+                  <option value="region">Region</option>
+                  <option value="status">Status (Hiring Now first)</option>
+                </select>
+              </div>
+            </div>
           </div>
 
-          <p class="filter-count" data-filter-count="jobs" role="status" aria-live="polite">Showing all 8 listings</p>
+          <div class="filter-bar" data-filter-group="jobs" role="group" aria-label="Filter listings by status">
+            <button class="filter-btn is-active" type="button" data-filter="all" aria-pressed="true">All</button>
+            <button class="filter-btn" type="button" data-filter="recent" aria-pressed="false">Recent</button>
+            <button class="filter-btn" type="button" data-filter="hiring-now" aria-pressed="false">Hiring Now</button>
+            <button class="filter-btn" type="button" data-filter="opening-soon" aria-pressed="false">Opening Soon</button>
+          </div>
+
+          <p class="listing-total" data-collection-total="jobs" role="status" aria-live="polite">8 open positions worldwide</p>
+          <p class="filter-count" data-filter-count="jobs">Showing all 8 listings</p>
 
           <div class="grid grid-2" data-collection="jobs" data-page-size="6" data-noun="listing" id="jobs">
 
-            <article class="card hiring-card" data-category="asia-pacific">
+            <article class="card hiring-card" data-category="asia-pacific" data-status="hiring-now" data-posted="2026-08-14" data-airline="Singapore Airlines" data-region="Asia Pacific" data-search="singapore airlines sq cabin crew / flight attendant singapore asia pacific asia pacific">
               <div class="hiring-card-top">
                 <span class="airline-logo" aria-hidden="true">SQ</span>
                 <span class="badge badge-hiring">Hiring Now</span>
@@ -199,7 +235,7 @@
               </div>
             </article>
 
-            <article class="card hiring-card" data-category="asia-pacific">
+            <article class="card hiring-card" data-category="asia-pacific" data-status="hiring-now" data-posted="2026-08-14" data-airline="Cathay Pacific" data-region="Asia Pacific" data-search="cathay pacific cx cabin crew / flight attendant hong kong asia pacific asia pacific">
               <div class="hiring-card-top">
                 <span class="airline-logo" aria-hidden="true">CX</span>
                 <span class="badge badge-hiring">Hiring Now</span>
@@ -237,7 +273,7 @@
               </div>
             </article>
 
-            <article class="card hiring-card" data-category="asia-pacific">
+            <article class="card hiring-card" data-category="asia-pacific" data-status="opening-soon" data-posted="2026-08-14" data-airline="All Nippon Airways" data-region="Asia Pacific" data-search="all nippon airways nh cabin crew / flight attendant tokyo asia pacific asia pacific">
               <div class="hiring-card-top">
                 <span class="airline-logo" aria-hidden="true">NH</span>
                 <span class="badge badge-soon">Opening Soon</span>
@@ -275,7 +311,7 @@
               </div>
             </article>
 
-            <article class="card hiring-card" data-category="asia-pacific">
+            <article class="card hiring-card" data-category="asia-pacific" data-status="hiring-now" data-posted="2026-08-14" data-airline="Korean Air" data-region="Asia Pacific" data-search="korean air ke cabin crew / flight attendant seoul asia pacific asia pacific">
               <div class="hiring-card-top">
                 <span class="airline-logo" aria-hidden="true">KE</span>
                 <span class="badge badge-hiring">Hiring Now</span>
@@ -313,7 +349,7 @@
               </div>
             </article>
 
-            <article class="card hiring-card" data-category="europe">
+            <article class="card hiring-card" data-category="europe" data-status="hiring-now" data-posted="2026-08-14" data-airline="Lufthansa" data-region="Europe" data-search="lufthansa lh cabin crew / flight attendant frankfurt &amp; munich europe europe">
               <div class="hiring-card-top">
                 <span class="airline-logo" aria-hidden="true">LH</span>
                 <span class="badge badge-hiring">Hiring Now</span>
@@ -351,7 +387,7 @@
               </div>
             </article>
 
-            <article class="card hiring-card" data-category="europe">
+            <article class="card hiring-card" data-category="europe" data-status="closing-soon" data-posted="2026-08-14" data-airline="KLM Royal Dutch Airlines" data-region="Europe" data-search="klm royal dutch airlines kl cabin crew / flight attendant amsterdam europe europe">
               <div class="hiring-card-top">
                 <span class="airline-logo" aria-hidden="true">KL</span>
                 <span class="badge badge-closing">Closing Soon</span>
@@ -389,7 +425,7 @@
               </div>
             </article>
 
-            <article class="card hiring-card" data-category="americas">
+            <article class="card hiring-card" data-category="americas" data-status="hiring-now" data-posted="2026-08-14" data-airline="Air Canada" data-region="Americas" data-search="air canada ac cabin crew / flight attendant toronto &amp; vancouver americas americas">
               <div class="hiring-card-top">
                 <span class="airline-logo" aria-hidden="true">AC</span>
                 <span class="badge badge-hiring">Hiring Now</span>
@@ -427,7 +463,7 @@
               </div>
             </article>
 
-            <article class="card hiring-card" data-category="africa">
+            <article class="card hiring-card" data-category="africa" data-status="opening-soon" data-posted="2026-08-14" data-airline="Kenya Airways" data-region="Africa" data-search="kenya airways kq cabin crew / flight attendant nairobi africa africa">
               <div class="hiring-card-top">
                 <span class="airline-logo" aria-hidden="true">KQ</span>
                 <span class="badge badge-soon">Opening Soon</span>
@@ -465,6 +501,21 @@
               </div>
             </article>
 
+          </div>
+
+          <!-- Shown only when a filter or search returns nothing. Hidden by
+               default so it never appears if JavaScript does not run. -->
+          <div class="listing-empty" data-collection-empty="jobs" hidden>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+            <h3>No listings match your search</h3>
+            <p>No listings match your search. Check back soon or sign up for hiring alerts.</p>
+            <form class="newsletter-form" data-form="newsletter" novalidate>
+              <label class="visually-hidden" for="empty-alerts-email">Email address</label>
+              <input type="email" id="empty-alerts-email" name="email" placeholder="Your email address" autocomplete="email" required>
+              <button class="btn btn-gold" type="submit">Get Hiring Alerts</button>
+            </form>
+            <p class="form-status" role="status" aria-live="polite"></p>
+            <button class="btn btn-outline btn-sm listing-empty-reset" type="button" data-collection-reset="jobs">Clear filters</button>
           </div>
 
           <ul class="pagination" data-pagination="jobs" aria-label="Listing pages"></ul>
@@ -594,6 +645,6 @@
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
 </button>
 
-<script src="js/main.min.js?v=20260814c" defer></script>
+<script src="js/main.min.js?v=20260815" defer></script>
 </body>
 </html>
