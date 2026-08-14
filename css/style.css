@@ -522,6 +522,8 @@ body.nav-open{overflow:hidden;}
   max-width:600px;
   margin:0 auto 48px;
 }
+.hero-sub p{margin:0 0 1.05em;}
+.hero-sub p:last-child{margin-bottom:0;}
 .hero-cta{display:flex;flex-wrap:wrap;gap:18px;justify-content:center;}
 /* The hero buttons run a size above the rest of the site's .btn-lg. */
 .hero-cta .btn{padding:20px 42px;font-size:.98rem;letter-spacing:.15em;}
@@ -1100,6 +1102,27 @@ body.nav-open{overflow:hidden;}
   color:var(--gold-500);margin:0 0 14px;
 }
 .statement p{color:var(--on-navy-soft);margin:0;font-size:.98rem;line-height:1.8;}
+
+/* Quiet legal note — small, italic, muted, inside a light bordered box.
+   Sits under a call to action without competing with it. */
+.disclaimer-note{
+  margin:28px 0 0;
+  padding:16px 20px;
+  max-width:64ch;
+  border:1px solid var(--border-strong);
+  border-radius:var(--radius-sm);
+  background:var(--grey-50);
+  font-size:.82rem;font-style:italic;line-height:1.65;
+  color:var(--ink-muted);
+}
+/* On the navy panels the same box goes translucent so it reads as a light
+   outline rather than a grey slab. */
+.section-navy .disclaimer-note,
+.pattern-navy .disclaimer-note{
+  border-color:rgba(255,255,255,0.22);
+  background:rgba(255,255,255,0.05);
+  color:var(--on-navy-muted);
+}
 
 .note-box{
   background:var(--gold-tint);
