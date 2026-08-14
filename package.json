@@ -1,0 +1,12 @@
+{
+  "name": "filipinacabincrew",
+  "version": "1.0.0",
+  "description": "Filipina Cabin Crew — static site. This manifest exists only to pin the JS minifier used by tools/build.py; the site itself ships no dependencies and no runtime JavaScript beyond js/main.js.",
+  "private": true,
+  "scripts": {
+    "build": "python tools/build.py"
+  },
+  "devDependencies": {
+    "terser": "5.50.0"
+  }
+}

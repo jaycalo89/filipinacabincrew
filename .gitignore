@@ -1,0 +1,8 @@
+# Build tooling only — nothing here is part of the deployed site.
+node_modules/
+package-lock.json
+npm-debug.log*
+
+# OS noise
+.DS_Store
+Thumbs.db
