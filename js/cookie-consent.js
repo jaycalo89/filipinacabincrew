@@ -112,10 +112,18 @@
     if (banner) return;
     banner = build();
     document.body.appendChild(banner);
-    // Next frame, so the entry transition has a start state to move from.
-    window.requestAnimationFrame(function () {
-      window.requestAnimationFrame(function () { banner.classList.add('is-in'); });
-    });
+
+    /* Commit the off-screen start position, then move to the resting one, so
+       the transition has something to animate from.
+
+       This is deliberately a forced reflow rather than requestAnimationFrame.
+       rAF does not run while the tab is hidden, and a page can perfectly well
+       load hidden — restored session, middle-clicked link, "open all in tabs".
+       Waiting for a frame there left the banner parked below the fold until
+       the tab was focused, which looks exactly like a banner that never
+       appeared. Reading offsetHeight is synchronous and works either way. */
+    void banner.offsetHeight;
+    banner.classList.add('is-in');
   }
 
   function hide() {
