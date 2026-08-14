@@ -69,8 +69,10 @@ CSS or JS so returning visitors are not served a stale cached copy.
 2. **Social links.** In `community.html`, replace the four `href="#"` values in the
    `#follow` section with your real profile URLs, and do the same for the footer social
    icons across the pages.
-3. **Analytics.** Every page carries a commented-out Google Analytics 4 snippet. Replace
-   `G-XXXXXXXXXX` with your measurement ID and uncomment it to enable.
+3. **Analytics — live.** Google Analytics 4 (`G-GYLEWQT3B9`) is installed and firing on
+   all nine pages. Note that it sets cookies on arrival, before the visitor has agreed to
+   anything: for EU/UK visitors that needs a consent banner gating the gtag snippet. The
+   cookies section of `privacy.html` names Google and links their opt-out.
 4. **Hiring listings.** The eight listings on `hiring-updates.html` and the three on the
    homepage are examples of the format, written from publicly known requirements. Replace
    them with your own verified updates before launch — and keep the note that the site is
