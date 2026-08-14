@@ -447,84 +447,94 @@ body.nav-open{overflow:hidden;}
    ========================================================================== */
 .hero{
   position:relative;
-  min-height:90vh;
+  min-height:92vh;
   display:flex;align-items:center;
-  padding:120px 0 96px;
+  padding:128px 0 116px;
   background:var(--navy-900);
   overflow:hidden;
 }
 .hero-media{position:absolute;inset:0;z-index:0;}
 .hero-media picture{height:100%;}
 .hero-media img{width:100%;height:100%;object-fit:cover;object-position:center 42%;}
-/* Navy scrim: opaque at the left where the type sits, clearing to the right
-   so the sunrise in the photograph still reads. */
+/* Navy scrim, weighted to the centre now that the type is centred: densest
+   behind the headline, thinning towards the edges so the sunrise on the right
+   of the photograph still reads. The second layer darkens the top and bottom
+   so the header and the scroll cue keep their contrast. */
 .hero-media::after{
   content:"";position:absolute;inset:0;
   background:
-    linear-gradient(100deg,rgba(17,28,76,0.94) 0%,rgba(17,28,76,0.86) 34%,rgba(27,42,107,0.60) 62%,rgba(27,42,107,0.38) 100%),
-    linear-gradient(180deg,rgba(17,28,76,0.55) 0%,transparent 26%,transparent 62%,rgba(17,28,76,0.62) 100%);
+    radial-gradient(115% 88% at 50% 52%,rgba(17,28,76,0.86) 0%,rgba(17,28,76,0.78) 38%,rgba(27,42,107,0.60) 70%,rgba(27,42,107,0.46) 100%),
+    linear-gradient(180deg,rgba(17,28,76,0.62) 0%,transparent 22%,transparent 58%,rgba(17,28,76,0.72) 100%);
 }
 .hero-inner{position:relative;z-index:1;width:100%;}
-.hero-content{max-width:760px;}
+.hero-content{max-width:960px;margin:0 auto;text-align:center;}
 
 .hero-tag{
-  display:inline-flex;align-items:center;gap:10px;
+  display:inline-flex;align-items:center;gap:11px;
   font-family:'Oswald',sans-serif;font-weight:500;
-  font-size:.68rem;letter-spacing:.28em;text-transform:uppercase;
+  font-size:.74rem;letter-spacing:.28em;text-transform:uppercase;
   color:var(--gold-400);
   border:1px solid rgba(212,160,23,0.55);
-  background:rgba(212,160,23,0.10);
-  padding:8px 16px;border-radius:var(--radius-pill);
-  margin-bottom:26px;
+  background:rgba(212,160,23,0.12);
+  padding:10px 20px;border-radius:var(--radius-pill);
+  margin-bottom:34px;
 }
 .hero-tag::before{
   content:"";width:6px;height:6px;border-radius:50%;background:var(--gold-500);
   box-shadow:0 0 0 4px rgba(212,160,23,0.22);
 }
 
+/* Display headline. The 9.4vw middle term is what carries the size on
+   desktop: it clears 5rem from roughly 850px of viewport upward, and the
+   clamp ceiling stops it running past the container on very wide screens. */
 .hero h1{
-  font-size:clamp(2.6rem,12vw,6.4rem);
-  line-height:0.98;
-  letter-spacing:-0.005em;
+  font-size:clamp(2.75rem,9.4vw,7rem);
+  line-height:0.94;
+  letter-spacing:-0.008em;
   text-transform:uppercase;
   color:#fff;
-  margin:0 0 24px;
-  text-shadow:0 18px 50px rgba(0,0,0,0.35);
+  margin:0 0 40px;
+  text-shadow:0 20px 56px rgba(0,0,0,0.42);
 }
 .hero h1 .line{display:block;}
 .hero h1 .gold{color:var(--gold-500);}
 
 .hero-sub{
-  font-size:1.03rem;line-height:1.8;
-  color:rgba(255,255,255,0.86);
-  max-width:56ch;
-  margin:0 0 34px;
+  font-size:1.2rem;
+  line-height:1.7;
+  color:#fff;
+  max-width:600px;
+  margin:0 auto 48px;
 }
-.hero-cta{display:flex;flex-wrap:wrap;gap:14px;}
+.hero-cta{display:flex;flex-wrap:wrap;gap:18px;justify-content:center;}
+/* The hero buttons run a size above the rest of the site's .btn-lg. */
+.hero-cta .btn{padding:20px 42px;font-size:.98rem;letter-spacing:.15em;}
 
 .hero-scroll{
-  position:absolute;left:50%;bottom:26px;z-index:1;
+  position:absolute;left:50%;bottom:34px;z-index:1;
   transform:translateX(-50%);
   display:none;
-  flex-direction:column;align-items:center;gap:10px;
-  font-family:'Oswald',sans-serif;font-size:.62rem;letter-spacing:.28em;
-  text-transform:uppercase;color:rgba(255,255,255,0.62);
+  flex-direction:column;align-items:center;gap:14px;
+  font-family:'Oswald',sans-serif;font-weight:500;
+  font-size:.78rem;letter-spacing:.30em;
+  text-transform:uppercase;color:var(--gold-500);
+  transition:color .25s var(--ease);
 }
-.hero-scroll:hover{color:#fff;}
-.hero-scroll-line{
-  width:1px;height:52px;
-  background:linear-gradient(180deg,rgba(255,255,255,0.05),rgba(212,160,23,0.9));
-  position:relative;overflow:hidden;
+.hero-scroll:hover{color:var(--gold-400);}
+.hero-scroll-arrow{
+  width:46px;height:46px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  border:2px solid rgba(212,160,23,0.55);
+  background:rgba(212,160,23,0.12);
+  animation:scroll-cue 2.2s var(--ease) infinite;
 }
-.hero-scroll-line::after{
-  content:"";position:absolute;left:0;top:-52px;width:1px;height:52px;
-  background:linear-gradient(180deg,transparent,var(--gold-400));
-  animation:scroll-cue 2.4s var(--ease) infinite;
+.hero-scroll-arrow svg{width:20px;height:20px;}
+.hero-scroll:hover .hero-scroll-arrow{
+  border-color:var(--gold-500);background:rgba(212,160,23,0.24);
 }
 @keyframes scroll-cue{
-  0%{transform:translateY(0);opacity:0;}
-  22%{opacity:1;}
-  100%{transform:translateY(104px);opacity:0;}
+  0%,100%{transform:translateY(0);}
+  50%{transform:translateY(9px);}
 }
 
 /* ==========================================================================
@@ -1213,7 +1223,10 @@ body.nav-open{overflow:hidden;}
   .stat{border-bottom:0;padding:44px 20px;}
   .stat:nth-child(2n){border-right:1px solid rgba(255,255,255,0.10);}
   .stat:last-child{border-right:0;}
-  .hero{padding:150px 0 120px;}
+  .hero{padding:170px 0 150px;}
+  .hero-tag{margin-bottom:40px;}
+  .hero h1{margin-bottom:46px;}
+  .hero-sub{margin-bottom:56px;}
   .hero-scroll{display:flex;}
   .page-hero{padding:104px 0 88px;}
   .featured-article{grid-template-columns:1.05fr 1fr;}
