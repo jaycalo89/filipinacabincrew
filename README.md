@@ -70,9 +70,11 @@ CSS or JS so returning visitors are not served a stale cached copy.
    ConvertKit, Formspree, Netlify Forms, a serverless function — anything that accepts a
    `POST` of form data). Until a value is set, that form refuses to submit and tells the
    visitor it is not live yet rather than faking a confirmation. Rebuild afterwards.
-2. **Social links.** In `community.html`, replace the four `href="#"` values in the
-   `#follow` section with your real profile URLs, and do the same for the footer social
-   icons across the pages.
+2. **Social links — live.** Facebook, TikTok, Instagram and YouTube are wired into the
+   footer icon row, the footer "Connect" column and the `#follow` section of
+   `community.html` on every page, all opening in a new tab. They are also declared in
+   the `sameAs` block of the Organization schema on `index.html`. If a handle changes,
+   update it in all three places plus that schema.
 3. **Analytics — live.** Google Analytics 4 (`G-GYLEWQT3B9`) is installed and firing on
    all nine pages. Note that it sets cookies on arrival, before the visitor has agreed to
    anything: for EU/UK visitors that needs a consent banner gating the gtag snippet. The
