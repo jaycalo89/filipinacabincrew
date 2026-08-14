@@ -7,17 +7,31 @@
   'use strict';
 
   /* ------------------------------------------------------------------------
-     FORM ENDPOINTS — set these once when the site goes live.
+     FORM ENDPOINTS — set these once the site has a form backend.
 
      Paste the POST URL of whichever service handles the mail (Mailchimp,
-     ConvertKit, Formspree, Netlify Forms, a serverless function...). While a
-     value is empty the matching form refuses to submit and tells the visitor
-     it is not live yet, rather than showing a success message for a signup
-     that was never stored anywhere.
+     ConvertKit, Formspree, Netlify Forms, a serverless function...). A
+     configured endpoint is always preferred: it is the only route that works
+     for a visitor with no mail client set up, and the only one that can store
+     a signup rather than mail it.
+
+     While a value is empty the matching form falls back to composing a message
+     to CONTACT_EMAIL in the visitor's own mail client. That genuinely reaches
+     the inbox on a static host with no backend, but it needs the visitor to
+     press send, so it is a stopgap rather than the finished article.
      ---------------------------------------------------------------------- */
   var ENDPOINTS = {
     newsletter: '',
-    mentorship: ''
+    mentorship: '',
+    contact: ''
+  };
+
+  var CONTACT_EMAIL = 'filipinacabincrew@outlook.com';
+
+  var SUBJECTS = {
+    newsletter: 'Newsletter signup',
+    mentorship: 'Mentorship application',
+    contact: 'Website enquiry'
   };
 
   var reduceMotion = window.matchMedia &&
@@ -351,11 +365,7 @@
 
         var endpoint = ENDPOINTS[key];
         if (!endpoint) {
-          say(status, 'err', 'Sign-up is not connected yet — please try again shortly.');
-          if (window.console) {
-            console.warn('[FCC] No endpoint configured for form "' + key +
-                         '". Set ENDPOINTS.' + key + ' in js/main.js.');
-          }
+          mailtoFallback(form, key, status);
           return;
         }
 
@@ -381,6 +391,42 @@
         });
       });
     });
+
+    /* No backend configured: hand the filled-in answers to the visitor's mail
+       client addressed to CONTACT_EMAIL. The form is not cleared — if the
+       handover fails, or they close the draft, nothing they typed is lost. */
+    function mailtoFallback(form, key, status) {
+      var data = new FormData(form);
+      var lines = [];
+      data.forEach(function (value, name) {
+        if (name === 'consent') { value = 'yes'; }
+        if (!String(value).trim()) return;
+        var label = name.charAt(0).toUpperCase() + name.slice(1);
+        lines.push(label + ': ' + value);
+      });
+
+      var href = 'mailto:' + CONTACT_EMAIL +
+        '?subject=' + encodeURIComponent(SUBJECTS[key] || 'Website enquiry') +
+        '&body=' + encodeURIComponent(lines.join('\n'));
+
+      // Over-long mailto URLs are silently dropped by some clients, so keep the
+      // draft short enough to survive the handover.
+      if (href.length > 1800) { href = href.slice(0, 1800); }
+
+      say(status, '', 'Opening your email app…');
+      window.location.href = href;
+
+      window.setTimeout(function () {
+        say(status, 'ok', 'Your email app should have opened with the message ready — ' +
+          'press send to reach us. If nothing happened, email ' + CONTACT_EMAIL + ' directly.');
+      }, 900);
+
+      if (window.console) {
+        console.warn('[FCC] No endpoint configured for form "' + key +
+                     '" — used the mailto fallback. Set ENDPOINTS.' + key +
+                     ' in js/main.js for a proper backend.');
+      }
+    }
 
     function say(el, kind, message) {
       if (!el) return;

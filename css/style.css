@@ -206,6 +206,11 @@ button{font-family:inherit;}
 .grid-2{grid-template-columns:1fr;}
 .grid-3{grid-template-columns:1fr;}
 .grid-4{grid-template-columns:1fr 1fr;}
+/* A grid item defaults to min-width:auto, so a 1fr column refuses to go below
+   its content's min-content width and the row spills past the container on a
+   very narrow phone. min-width:0 lets 1fr mean what it says. */
+.grid > *,
+.mentorship-grid > *{min-width:0;}
 
 /* ==========================================================================
    5. Typography components
@@ -319,18 +324,21 @@ button{font-family:inherit;}
 .site-header.is-scrolled{box-shadow:var(--shadow-nav);border-bottom-color:transparent;}
 
 .nav-inner{
-  display:flex;align-items:center;justify-content:space-between;gap:18px;
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
   height:var(--header-h);
 }
 
-.brand{display:flex;align-items:center;gap:12px;flex-shrink:0;color:inherit;}
+/* The brand may shrink on a narrow phone. Without this the wordmark holds its
+   full width and pushes the search and menu buttons past the right edge, which
+   both clips the hamburger and gives every page a horizontal scrollbar. */
+.brand{display:flex;align-items:center;gap:12px;flex-shrink:1;min-width:0;color:inherit;}
 .brand:hover{color:inherit;}
 /* Sized by height with an automatic width, so the mark renders correctly
    whatever its aspect ratio — a square crest and a wide wordmark both sit on
    the same baseline. object-fit:contain stops a non-square file being
    stretched if width/height attributes on the tag disagree with the file. */
 .brand img{height:44px;width:auto;max-width:210px;object-fit:contain;flex-shrink:0;}
-.site-header .brand img{height:55px;}
+.site-header .brand img{height:44px;}
 .footer-brand .brand img{height:48px;}
 /* The logo ships on a white ground rather than transparency, so on the navy
    surfaces it sits in a white plate. Knocking the background out is not an
@@ -341,12 +349,15 @@ button{font-family:inherit;}
   border-radius:8px;
   padding:5px;
 }
-.brand-text{display:flex;flex-direction:column;line-height:1;}
+.brand-text{display:flex;flex-direction:column;line-height:1;min-width:0;}
 .brand-name{
   font-family:'Oswald',sans-serif;font-weight:600;
-  font-size:1.02rem;letter-spacing:.10em;text-transform:uppercase;
+  font-size:.88rem;letter-spacing:.10em;text-transform:uppercase;
   color:var(--navy-800);
-  white-space:nowrap;
+  /* nowrap keeps the wordmark on one line; the ellipsis is a floor, not a
+     normal state — below ~320px it trims rather than shoving the nav buttons
+     off screen. */
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
 /* Hidden by default: on a narrow phone the strapline is wider than the
    wordmark above it and would crowd the search and menu buttons out of the
@@ -672,15 +683,28 @@ body.nav-open{overflow:hidden;}
 }
 .hiring-card .btn-block{margin-top:auto;}
 
-/* Two-up action row at the foot of a hiring card: apply on the airline's own
-   site, or read the preparation guide first. The pair sits side by side while
-   there is room for both and stacks once the card narrows. */
+/* Action block at the foot of a hiring card. The airline's own site is the
+   route we push — it is the only one that is definitely the real vacancy — so
+   it takes a full-width gold button. The two job boards share the row beneath
+   for people who would rather apply where their profile already lives, and the
+   preparation guide closes the block. */
 .card-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:auto;}
 .card-actions .btn{
-  flex:1 1 148px;
+  flex:1 1 110px;
   padding:14px 16px;
   font-size:.78rem;letter-spacing:.11em;
 }
+.card-actions .apply-direct,
+.card-actions .btn-prepare{flex:1 1 100%;}
+
+/* When the listing links were last confirmed to resolve. Deliberately worded
+   as a link check, not a check of the vacancy itself. */
+.hiring-verified{
+  margin:18px 0 12px;
+  font-size:.72rem;letter-spacing:.04em;
+  color:var(--ink-muted);
+}
+.hiring-verified time{font-weight:600;color:var(--ink-soft);}
 .btn-ext{width:13px;height:13px;flex-shrink:0;opacity:.72;}
 
 /* Per-card independence note. Deliberately quiet, but always present. */
@@ -1275,6 +1299,12 @@ body.nav-open{overflow:hidden;}
    18. Responsive — the layout widens from here up
    ========================================================================== */
 @media (min-width:600px){
+  /* Past the phone the row has room again, so the mark and wordmark go back to
+     full size and the strapline reappears. */
+  .nav-inner{gap:18px;}
+  .brand{flex-shrink:0;}
+  .site-header .brand img{height:55px;}
+  .brand-name{font-size:1.02rem;}
   .brand-tag{display:block;}
   .newsletter-form{flex-direction:row;}
   .newsletter-form .btn{white-space:nowrap;}
