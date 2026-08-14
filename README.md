@@ -26,6 +26,7 @@ css/style.min.css       Minified build output — referenced by every page
 js/main.js              Source script (edit this one)
 js/main.min.js          Minified build output — referenced by every page
 tools/build.py          Regenerates both .min files
+tools/make-icons.py     Regenerates favicons + og-image.jpg from images/fcc-logo.png
 
 fonts/                  Self-hosted Inter + Oswald (variable, woff2, subset)
 images/                 Logo, hero and card imagery in JPEG + WebP at two or three widths
@@ -41,6 +42,18 @@ After changing `css/style.css` or `js/main.js`, rebuild the minified files:
 ```bash
 python tools/build.py
 ```
+
+If you replace `images/fcc-logo.png`, regenerate everything derived from it:
+
+```bash
+python tools/make-icons.py
+```
+
+That rewrites the favicons, the apple-touch icon, the PWA icon and `og-image.jpg`.
+The logo's own `width`/`height` attributes in the HTML must then match the new
+file's pixel dimensions (they are currently `627x625`) — CSS sizes the mark by
+height, so those attributes exist purely to reserve the right box and prevent
+layout shift.
 
 The pages load the `.min` versions with a `?v=` cache-busting query. Bump that value
 (a find-and-replace for `v=20260813` across the HTML files) whenever you deploy changed
