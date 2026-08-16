@@ -280,20 +280,18 @@
       // that equal keys never shuffle between renders.
       cards.forEach(function (card, i) { card._order = i; });
 
-      var RECENT_DAYS = 30;
       var STATUS_RANK = { 'hiring-now': 0, 'closing-soon': 1, 'opening-soon': 2 };
 
+      /* data-posted is a sort key only — it feeds the "newest" comparator
+         below. It used to also drive a "Recent" filter with a 30-day window,
+         which was dropped: every listing carries the same posted date, so the
+         filter was all-or-nothing and went silently empty once the window
+         elapsed. Status is the useful axis, and the bar filters on that. */
       function postedTime(card) {
         var raw = card.getAttribute('data-posted');
         if (!raw) return NaN;
         var t = Date.parse(raw);
         return isNaN(t) ? NaN : t;
-      }
-
-      function isRecent(card) {
-        var t = postedTime(card);
-        if (isNaN(t)) return false;
-        return (Date.now() - t) <= RECENT_DAYS * 24 * 60 * 60 * 1000;
       }
 
       function inRegion(card) {
@@ -302,12 +300,11 @@
         return cats.indexOf(region) !== -1;
       }
 
-      /* One filter value covers three cases so the same bar can drive both
-         collections: "recent" is computed, otherwise the value is matched
-         against the card's status (hiring listings) or its category (guides). */
+      /* One filter value covers two cases so the same bar can drive both
+         collections: the value is matched against the card's status (hiring
+         listings) or, failing that, its category (guides). */
       function inFilter(card) {
         if (filter === 'all') return true;
-        if (filter === 'recent') return isRecent(card);
         if ((card.getAttribute('data-status') || '') === filter) return true;
         var cats = (card.getAttribute('data-category') || '').split(/\s+/);
         return cats.indexOf(filter) !== -1;
