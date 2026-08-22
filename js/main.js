@@ -26,9 +26,9 @@
      them apart.
      ---------------------------------------------------------------------- */
   var ENDPOINTS = {
-    newsletter: 'https://formspree.io/f/mzepvoev',
-    mentorship: 'https://formspree.io/f/mzepvoev',
-    contact: 'https://formspree.io/f/mzepvoev'
+    newsletter: 'https://formspree.io/f/xeajdnlv',
+    mentorship: 'https://formspree.io/f/xeajdnlv',
+    contact: 'https://formspree.io/f/xeajdnlv'
   };
 
   var CONTACT_EMAIL = 'filipinacabincrew@outlook.com';
