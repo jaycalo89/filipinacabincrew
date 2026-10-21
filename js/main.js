@@ -20,13 +20,15 @@
      the inbox on a static host with no backend, but it needs the visitor to
      press send, so it is a stopgap rather than the finished article.
 
-     All three currently post to the same Formspree form, so newsletter
-     signups, mentorship applications and contact messages land in one inbox.
-     The `subject` field posted alongside them (see SUBJECTS) is what tells
-     them apart.
+     Both currently post to the same Formspree form, so mentorship
+     applications and contact messages land in one inbox. The `subject`
+     field posted alongside them (see SUBJECTS) is what tells them apart.
+
+     Newsletter signups are NOT handled here. They go to beehiiv, whose
+     embed (subscribe-forms.beehiiv.com/v3/loader.js) renders and submits
+     its own form — there is no data-form="newsletter" left in the markup.
      ---------------------------------------------------------------------- */
   var ENDPOINTS = {
-    newsletter: 'https://formspree.io/f/xeajdnlv',
     mentorship: 'https://formspree.io/f/xeajdnlv',
     contact: 'https://formspree.io/f/xeajdnlv'
   };
@@ -34,7 +36,6 @@
   var CONTACT_EMAIL = 'filipinacabincrew@outlook.com';
 
   var SUBJECTS = {
-    newsletter: 'Newsletter signup',
     mentorship: 'Mentorship application',
     contact: 'Website enquiry'
   };
@@ -42,7 +43,6 @@
   /* What the visitor is told on success. A contact message is not an
      application and should not be confirmed as one. */
   var MESSAGES = {
-    newsletter: 'You are on the list — welcome aboard.',
     mentorship: 'Thank you — your application has been sent. We will be in touch by email.',
     contact: 'Thank you — your message has been sent. We will reply by email.'
   };
@@ -596,8 +596,8 @@
 
     Array.prototype.forEach.call(forms, function (form) {
       var key = form.getAttribute('data-form');
-      // The status line lives inside the form on the longer forms and as a
-      // sibling under the newsletter cards, so look in both places before
+      // The status line lives inside the form on some layouts and as a
+      // sibling alongside it on others, so look in both places before
       // falling back to an explicitly targeted element.
       var status = form.querySelector('.form-status') ||
                    (form.parentElement && form.parentElement.querySelector('.form-status')) ||
@@ -618,9 +618,8 @@
         if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
         say(status, '', 'Sending…');
 
-        // All three form types post to the same Formspree form, and a
-        // newsletter signup carries nothing but an address — so without this
-        // the inbox cannot tell a signup from an application. _subject is
+        // Both form types post to the same Formspree form, so without this
+        // the inbox cannot tell an enquiry from an application. _subject is
         // Formspree's reserved field for the notification subject line.
         var payload = new FormData(form);
         payload.append('_subject', SUBJECTS[key] || 'Website enquiry');

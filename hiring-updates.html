@@ -2033,12 +2033,7 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
             <h3>No listings match your search</h3>
             <p>No listings match your search. Check back soon or sign up for hiring alerts.</p>
-            <form class="newsletter-form" data-form="newsletter" novalidate>
-              <label class="visually-hidden" for="empty-alerts-email">Email address</label>
-              <input type="email" id="empty-alerts-email" name="email" placeholder="Your email address" autocomplete="email" required>
-              <button class="btn btn-gold" type="submit">Get Hiring Alerts</button>
-            </form>
-            <p class="form-status" role="status" aria-live="polite"></p>
+            <a class="btn btn-gold" href="#hiring-alerts">Get Hiring Alerts</a>
             <button class="btn btn-outline btn-sm listing-empty-reset" type="button" data-collection-reset="jobs">Clear filters</button>
           </div>
 
@@ -2050,15 +2045,12 @@
         </div>
 
         <aside class="sidebar">
-          <div class="sidebar-card sidebar-card-navy">
+          <div class="sidebar-card sidebar-card-navy" id="hiring-alerts">
             <h3>Sign up for hiring alerts</h3>
             <p>New openings and intake windows, sent as they are published. No noise in between.</p>
-            <form class="sidebar-form" data-form="newsletter" novalidate>
-              <label class="visually-hidden" for="alerts-email">Email address</label>
-              <input type="email" id="alerts-email" name="email" placeholder="Your email address" autocomplete="email" required>
-              <button class="btn btn-gold btn-block" type="submit">Get Hiring Alerts</button>
-            </form>
-            <p class="form-status" role="status" aria-live="polite"></p>
+            <div class="beehiiv-embed">
+              <script async src="https://subscribe-forms.beehiiv.com/v3/loader.js" data-beehiiv-form="fad6c34e-9dba-4039-a50d-508aecd7c0f1"></script>
+            </div>
             <p style="font-size:.76rem;margin-top:14px;">We respect your privacy. Unsubscribe anytime.</p>
           </div>
 
