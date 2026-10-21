@@ -1,10 +1,32 @@
 # Filipina Cabin Crew
 
-**Where Aviation Connects Us** — an independent aviation community platform for current
-and aspiring cabin crew of all nationalities. Established 2016.
+**Live site:** [filipinacabincrew.com](https://filipinacabincrew.com)
 
-Pure static HTML, CSS and JavaScript. No frameworks, no build step required to view the
-site, no third-party requests at runtime.
+**Where Aviation Connects Us** is an independent aviation community platform for current
+and aspiring cabin crew of all nationalities, established 2016. This repo is the full
+rebuild of the site, which I designed, built and maintain.
+
+## Highlights
+
+- **13 pages**: homepage, filterable and paginated hiring updates, career guides,
+  mentorship applications, community hub, and legal pages
+- **Hand-rolled build tooling** in Python: a string-aware CSS minifier plus pinned
+  terser for JS, with cache-busting versions on every asset
+- **Privacy by design**: Google Analytics loads only after the visitor accepts the
+  cookie notice, and fonts and images are self-hosted
+- **Performance**: responsive WebP/JPEG images via `<picture>` and `srcset`, explicit
+  dimensions for zero layout shift, preloaded hero, `font-display: optional`
+- **Accessibility**: skip link, visible focus, semantic landmarks, labelled forms with
+  live status regions, keyboard-operable menu, `prefers-reduced-motion` support
+- **SEO**: Organization schema, sitemap, robots.txt, Open Graph card, web manifest
+- **Forms** through Formspree and a beehiiv newsletter embed, with no backend to run
+
+## Stack
+
+Static HTML, CSS and vanilla JavaScript; Python build scripts; GitHub Pages with a
+custom domain. Built with AI-assisted development (Claude Code) on Ubuntu/WSL. I
+directed the architecture, reviewed and tested the output, and handle content,
+deployment and ongoing fixes.
 
 ---
 
@@ -81,38 +103,27 @@ file's pixel dimensions (they are currently `627x625`) — CSS sizes the mark by
 height, so those attributes exist purely to reserve the right box and prevent
 layout shift.
 
-## Before going live — the short checklist
+## Configuration
 
-1. **Form endpoints — live.** All three keys in `ENDPOINTS` (`newsletter`,
-   `mentorship`, `contact`) post to the same Formspree form. Because they share one
-   endpoint, each submission also carries `_subject` — Formspree's reserved field for
-   the notification subject line — so a bare newsletter signup can still be told apart
-   from a mentorship application in the inbox. To move a form elsewhere, change its
-   entry and rebuild. Blank an entry and that form falls back to composing a message to
-   `filipinacabincrew@outlook.com` in the visitor's own mail client, which reaches the
-   inbox but needs them to press send.
-2. **Social links — live.** Facebook, TikTok, Instagram and YouTube are wired into the
-   footer icon row, the footer "Connect" column and the `#follow` section of
-   `community.html` on every page, all opening in a new tab. They are also declared in
-   the `sameAs` block of the Organization schema on `index.html`. If a handle changes,
-   update it in all three places plus that schema.
-3. **Analytics — live, behind consent.** Google Analytics 4 (`G-GYLEWQT3B9`) runs on all
-   twelve pages, but the tag is *not* in the markup. `js/cookie-consent.js` injects it,
-   and only after the visitor accepts the notice at the foot of the page. Decline and the
-   script is never requested, so no analytics cookies are set at all. The choice is stored
-   in `localStorage` under `fcc-cookie-consent` and can be revisited from the Cookie
-   Settings link in every footer. If you ever add another third-party tag, load it from
-   the same place rather than pasting it into the head — otherwise it will fire before
-   consent and undo this.
-4. **Hiring listings.** The eight listings on `hiring-updates.html` and the three on the
-   homepage are examples of the format, written from publicly known requirements. Replace
-   them with your own verified updates before launch — and keep the note that the site is
-   not a recruiter, which is what keeps visitors safe from placement-fee scams.
-5. **Legal pages.** `privacy.html` and `terms.html` are written to match the site exactly
-   as built. Add your governing jurisdiction to the final section of `terms.html` and
-   have both reviewed locally.
-6. **Search.** The header search posts to Google scoped to the site domain. It only
-   returns results once the site is indexed.
+1. **Forms.** The mentorship and contact forms post to one Formspree form, set in
+   `ENDPOINTS` in `js/main.js`. Each submission carries `_subject` (Formspree's
+   reserved subject-line field) so messages can be told apart in the inbox. Blank an
+   entry and that form falls back to composing an email to
+   `filipinacabincrew@outlook.com` in the visitor's mail client. Rebuild after changes.
+2. **Newsletter.** Signups use a beehiiv embed on `index.html` and `community.html`.
+3. **Social links.** Facebook, TikTok, Instagram and YouTube appear in the footer icon
+   row, the footer "Connect" column, the `#follow` section of `community.html`, and the
+   `sameAs` block of the Organization schema on `index.html`. Update all four if a
+   handle changes.
+4. **Analytics, behind consent.** Google Analytics 4 is *not* in the markup.
+   `js/cookie-consent.js` injects it only after the visitor accepts. Decline and the
+   script is never requested. The choice is stored in `localStorage` under
+   `fcc-cookie-consent` and can be changed from the Cookie Settings link in every
+   footer. Load any future third-party tag from the same place so it can't fire
+   before consent.
+5. **Hiring listings** are maintained by hand. Keep the note that the site is not a
+   recruiter; it protects visitors from placement-fee scams.
+6. **Search.** The header search posts to Google, scoped to the site domain.
 
 ## Design system
 
@@ -131,9 +142,9 @@ never reflows.
 
 ## Performance notes
 
-- Fonts and all assets are same-origin. The only third-party request the site can make
-  is Google Analytics, and it is not issued unless the visitor accepts the cookie
-  notice; decline and the page stays entirely same-origin.
+- Fonts, images, CSS and JS are all same-origin. The third-party requests are the
+  beehiiv newsletter embed (on the two pages that show it) and Google Analytics, which
+  is only requested after the visitor accepts the cookie notice.
 - The homepage hero is preloaded in the head as WebP with a JPEG fallback; every other
   image is `loading="lazy"` with explicit `width`/`height` to keep layout shift at zero.
 - Photography is served as WebP with JPEG fallbacks at two or three widths via
@@ -155,6 +166,6 @@ place if you keep the images.
 
 ## Deployment
 
-Upload the whole directory to any static host (Netlify, Cloudflare Pages, GitHub Pages,
-Vercel, or plain nginx/Apache). No server-side runtime is needed. Point the host's
-404 handler at `404.html`, and serve everything over HTTPS.
+Hosted on GitHub Pages with the custom domain set in `CNAME`. Every push to `main`
+publishes. GitHub Pages serves `404.html` for missing pages automatically. The site
+also runs unchanged on any static host (Netlify, Cloudflare Pages, nginx, Apache).
